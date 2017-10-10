@@ -5,6 +5,7 @@ import Foundation
 let absolutePath = CommandLine.arguments[1]
 let enumerator = FileManager.default.enumerator(atPath:CommandLine.arguments[1])
 
+var classCount = 0
 var deletedFilesCount = 0
 while let sourceFileLocation = enumerator?.nextObject() as? String {
     if (sourceFileLocation.hasSuffix(".h") || sourceFileLocation.hasSuffix(".m")) && !sourceFileLocation.contains(".framework") {
@@ -19,6 +20,7 @@ while let sourceFileLocation = enumerator?.nextObject() as? String {
                                     using: { (result, _, _) in
                                         if let result = result {
                                             let value = (string as NSString).substring(with:result.range(at:1))
+                                            classCount += 1
                                             let enumeratorMatching = FileManager.default.enumerator(atPath:CommandLine.arguments[1])
                                             while let sourceFileLocation = enumeratorMatching?.nextObject() as? String {
                                                 if (!sourceFileLocation.hasSuffix(value + ".h") && !sourceFileLocation.hasSuffix(value + ".m")) {
@@ -61,6 +63,7 @@ while let sourceFileLocation = enumerator?.nextObject() as? String {
         }
     }
 }
+print("Found \(classCount) classes")
 print("Deleted \(deletedFilesCount) unused files")
 
 exit(0)
